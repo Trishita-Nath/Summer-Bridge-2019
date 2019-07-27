@@ -1,0 +1,67 @@
+---
+title: "Assignment 2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+ ```[r} 
+#Importing data from https://raw.github.com/vincentarelbundock/Rdatasets/master/csv/boot/acme.csv to github account
+
+MyData <- read.csv(file="https://raw.githubusercontent.com/Trishita-Nath/Summer-Bridge-2019/master/R/data.csv",header=TRUE, sep=",");
+ ```
+# 1. Use the summary function to gain an overview of the data set. Then display the mean and median for at least two attributes.
+ ```[r} 
+summary (MyData)
+mean(MyData$market)
+mean(MyData$acme)
+median(MyData$market)
+median(MyData$acme)
+``` 
+# 2. Create a new data frame with a subset of the columns and rows. Make sure to rename it.
+
+```[r} 
+#new data frame
+
+dataFrame.data <- data.frame(MyData);
+print (dataFrame.data)
+``` 
+```[r} 
+#subset of columns and rows - First 25 rows and selecting 3 columns
+
+test.data <- dataFrame.data[1:25, 2:4]
+print (test.data)
+``` 
+# 3. Create new column names for the new data frame.
+
+```[r} 
+#Changing column names of main data frame - from X to ID, month to Date , market to Market_Value, acme to ACME_Value
+
+colnames(dataFrame.data) <- c("ID", "Date","Market_Value","ACME_Value");
+print (dataFrame.data)
+``` 
+```[r} 
+#Changing column names of subset data frame - from month to Date , market to Market_Value, acme to ACME_Value
+
+colnames(test.data) <- c("Date","Market_Value","ACME_Value");
+print (test.data)
+``` 
+# 4. Use the summary function to create an overview of your new data frame. The print the mean and median for the same two attributes. Please compare.
+```[r} 
+summary(test.data)
+mean(test.data$Market_Value)
+mean(test.data$ACME_Value)
+median(MyData$Market_Value)
+median(MyData$ACME_Value)
+``` 
+# 5. For at least 3 values in a column please rename so that every value in that column is renamed.
+```[r} 
+X <- test.data
+
+#Replacing '86' to '1986, '87' to '1987' and '88' to '1988' in column Date
+X$Date <- sub("*(86)", "1986", X$Date)
+X$Date <- sub("*(87)", "1987", X$Date)
+X$Date <- sub("*(88)", "1988", X$Date)
+print (X);
+```
