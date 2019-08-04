@@ -1,0 +1,94 @@
+---
+title: "Assignment 3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+ ```{r} 
+# Importing data from https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/master/csv/datasets/USArrests.csv to github account
+ ```
+ 
+# 1.Data Exploration: This should include summary statistics, means, medians, quartiles, or any other relevant information about the data set. Please include some conclusions in the R Markdown text.
+ ```{r} 
+crimeData <- read.csv(file="https://raw.githubusercontent.com/Trishita-Nath/Summer-Bridge-2019/master/R/crime.csv",header=TRUE, sep=",");
+summary (crimeData);
+
+# Conclusion 1 : Among the crime data provided, lowest murder rate is 0.8 and maximum is 17.4 per 100k residents. Lowest Assault rate is 45 and maximum is 337 per 100k residents.
+
+# Conclusion 2 : Among the crime data provided, lowest crime rate recorded in a state is murder (0.8) and highest is assault (337 per 100k residents)
+```
+
+# 2. Data wrangling: Please perform some basic transformations. They will need to make sense but could include column renaming, creating a subset of the data, replacing values, or creating new columns with derived data
+ ```{r} 
+# creating data frame and renaming first column as "State"
+dataFrame.data <- data.frame(crimeData);
+colnames(dataFrame.data) <- c("State", "Murder","Assault","UrbanPop","Rape");
+head(dataFrame.data);
+
+# Adding new column "Total_Crime" which represents sum of all crimes of each state
+dataFrame.data["Total_Crime"] <- NA
+dataFrame.data$Total_Crime <- dataFrame.data$Murder + dataFrame.data$Assault + dataFrame.data$Rape
+head(dataFrame.data);
+
+# Top 5 states with lowest crime rate
+head(dataFrame.data[with(dataFrame.data, order(Total_Crime)), ],5)
+
+# Top 5 states with highest crime rate
+tail(dataFrame.data[with(dataFrame.data, order(Total_Crime)), ],5)
+```
+
+# 3.Graphics: Please make sure to display at least one scatter plot, box plot and histogram. 
+ ```{r} 
+# scatter plot
+plot(dataFrame.data[,-c(1,6)])
+ ```
+ 
+  ```{r} 
+  
+ # Scatter Plot
+library(ggplot2) 
+ggplot(data = dataFrame.data, aes(y = Assault, x = Total_Crime)) +
+geom_point()
+ ```
+ 
+ ```{r} 
+# Box plot
+library(ggplot2)
+ggplot(stack(dataFrame.data), aes(x = ind, y = values)) +
+geom_boxplot()
+
+
+ # Histogram
+total_crime <- dataFrame.data$Total_Crime
+hist(total_crime)
+
+murder <- dataFrame.data$Murder
+hist(murder)
+ ```  
+ 
+# 4.Meaningful question for analysis -Please state at the beginning a meaningful question for analysis. Use the first three steps and anything else that would be helpful to answer the question you are posing from the data set you chose. Please write a brief conclusion paragraph in R markdown at the end.
+
+ ```{r} 
+# Question : Select top 5 states having highest number of crimes and among them what is the percentage of murders compared to all other crimes.
+
+
+# Top 5 states with highest crime rate
+tail(dataFrame.data[with(dataFrame.data, order(Total_Crime)), ],5)
+
+# Adding new column - to calculate percentage of murder over total crime
+murder.data <- dataFrame.data
+murder.data["Murder_Percentage"] <- NA
+murder.data$Murder_Percentage <- murder.data$Murder / murder.data$Total_Crime
+murder.data$Murder_Percentage <- murder.data$Murder_Percentage * 100;
+tail(murder.data[with(murder.data, order(Total_Crime)), ],5)
+
+# Plot showing Total Crime vs Murder percentage
+ggplot(data = murder.data, aes(x = Murder_Percentage, y = Total_Crime)) +
+geom_point()
+
+# Conclusion - From the graph it can infered that murder is not the major portion of the crimes.And also the avergae murder rate is between 3% and 4%.
+
+ ```
